@@ -8,6 +8,7 @@
         <h>
             Hi Welcome Back {{user.username}}
         </h>
+        <p><a href="{% url 'logout' %}">logout</a></p>
         <input type="button" id='received_message_button' value="Try Received {{user.username}}">
         <p> message </p><input type="text" id='message_box' value="">
         <p> receivers </p><input type="text" id='receiver_box' value="">

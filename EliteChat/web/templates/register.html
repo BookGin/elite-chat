@@ -1,0 +1,17 @@
+<html>
+<body>
+{% block title %}Registration{% endblock %}
+{% block content %}
+
+{% if user.is_authenticated %}
+<h1> You have registered ! </h1>h1>
+{% else %}
+<form action="" method="post">
+	{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Register">
+</form>
+{% endif %}
+{% endblock %}
+</body>
+</html>
