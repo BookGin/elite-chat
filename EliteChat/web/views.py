@@ -2,6 +2,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.template import RequestContext
+from django import forms
 
 def home(request):
     if not request.user.is_authenticated():
@@ -23,4 +24,16 @@ def register(request):
         form = UserCreationForm()
     return render(request, "register.html", {'form': form, })
 
+
+class ChannelForm(forms.Form):
+    name1 = forms.CharField(label='Name 1')
+    name2 = forms.CharField(label='Name 2')
+    name3 = forms.CharField(label='Name 3')
+
+def create_channel(request):
+    if request.method == 'POST':
+        #TODO: Client will send 3 userane, transform them into channeid!
+    else:
+        form = ChannelForm()
+        return render(request, 'create_channel.html', {'form': form})
 # Create your views here.

@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib.auth.views import login, logout
-from .views import home, register
+from .views import home, register, create_channel
 
 urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^login$', login,{'template_name': 'login.html'}, name='login'),
     url(r'^logout$', logout, {'template_name': 'logout.html'}, name='logout'),
     url(r'^register$', register, name='register'),
+    url(r'^create_channel$', create_channel, name='create_channel')
 ]
