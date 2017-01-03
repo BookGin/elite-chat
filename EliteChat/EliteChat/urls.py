@@ -16,11 +16,9 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from web import views as web_views
-from messenger.views import UserMessenger
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', web_views.landing_page, name="landing_page"),
-    url(r'^web/', include("web.urls")),
-    url(r'^messenger/', include("web.urls")),
-    url(r'^message/', UserMessenger.as_view())
+    url(r'^accounts/', include("web.urls")),
+    url(r'^messenger/', include('messenger.urls'))
 ]

@@ -3,5 +3,7 @@ from django.contrib import admin
 from web import views as web_views
 from .views import *
 urlpatterns = [
-    url(r'^get/', include("web.urls"))
+    url(r'^$', index, name='index'),
+    url(r'^create_channel$', create_channel, name='create_channel'),
+    url(r'^post/$', post, name='post')
 ]

@@ -1,16 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
-class Message(models.Model):
-    owner = models.ForeignKey(
-        User, related_name='owned_message',
-    )
-    content = models.TextField()
-    receiver = models.ManyToManyField(
-        User, related_name='received_message',
-    )
-    time = models.DateTimeField()
-    def connect_receiver(self, receiver_name):
-        print("receiver_name ", receiver_name)
-        self.receiver.add(User.objects.get(username = receiver_name))
+from django.utils import timezone
 
+class Channel(models.Model):
+    users = models.ManyToManyField(
+        User, related_name='belonged_channel',
+    )
+    name = models.TextField()
+    def add_user(self, user):
+        self.users.add(user)
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name='has_chats', default=1)
+    content = models.TextField()
+    time = models.DateTimeField(auto_now_add=True)
+    #channel = models.ForeignKey(Channel, related_name='messages')
 # Create your models here.
+
