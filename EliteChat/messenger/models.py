@@ -14,6 +14,6 @@ class Message(models.Model):
     sender = models.ForeignKey(User, related_name='has_chats', default=1)
     content = models.TextField()
     time = models.DateTimeField(auto_now_add=True)
-    #channel = models.ForeignKey(Channel, related_name='messages')
+    channel = models.ForeignKey(Channel, related_name='messages', default=1)
 # Create your models here.
 

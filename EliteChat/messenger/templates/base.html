@@ -29,7 +29,7 @@
                   <li><a href="{% url 'create_channel' %}">Create</a></li>
                    <li class="divider"></li>
                     {% for channel in channels %}
-                    <li><a href="../{{channel.id}}">{{ channel.name }}</a></li>
+                    <li><a href="{% url 'channel_message' channel_id=channel.id%}">{{ channel.name }}</a></li>
                     {% endfor %}
       	        </ul>
   	            </li>
