@@ -12,7 +12,8 @@ import datetime
 
 def index(request):
     chats = list(Message.objects.all())[-100:]
-    return render(request, 'chatroom.html', {'chats': chats})
+    channels = list(Channel.objects.all())
+    return render(request, 'chatroom.html', {'chats': chats, 'channels': channels})
 
 @csrf_exempt
 def post(request):
@@ -26,8 +27,7 @@ def post(request):
         elif post_type == 'get_chat':
             last_chat_id = int(request.POST.get('last_chat_id'))
             chats = Message.objects.filter(id__gt=last_chat_id)
-            channels = Channel.objects.filter()
-            return render(request, 'chat_list.html', {'chats':chats, 'channels': channels})
+            return render(request, 'chat_list.html', {'chats':chats})
 
 # Create your views here.
 class ChannelForm(forms.Form):
@@ -52,3 +52,7 @@ def create_channel(request):
     else:
         form = ChannelForm()
         return render(request, 'create_channel.html', {'form': form})
+
+def channel_message(request, channel_id):
+    channels = list(Channel.objects.all())
+    return render(request, 'chatroom.html', {'channel_id': channel_id, 'channels': channels})

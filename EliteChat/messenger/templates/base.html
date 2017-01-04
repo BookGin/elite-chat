@@ -19,7 +19,6 @@
                 </a>
       	        <ul class="dropdown-menu" role="menu">
                   <li><a href="{% url 'logout' %}">logout</a></li>
-                  <li><a href="{% url 'create_channel' %}">Create Channel</a></li>
       	        </ul>
   	            </li>
                 <li role="presentation" class="dropdown">
@@ -30,7 +29,7 @@
                   <li><a href="{% url 'create_channel' %}">Create</a></li>
                    <li class="divider"></li>
                     {% for channel in channels %}
-                    <li>{{ channel.name }}</li>
+                    <li><a href="../{{channel.id}}">{{ channel.name }}</a></li>
                     {% endfor %}
       	        </ul>
   	            </li>
