@@ -16,9 +16,22 @@
                 <li role="presentation" class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="{% url 'login' %}" role="button" aria-expanded="false">{{user.username}}
     			    <span class="caret"></span>
-    		    </a>
+                </a>
       	        <ul class="dropdown-menu" role="menu">
                   <li><a href="{% url 'logout' %}">logout</a></li>
+                  <li><a href="{% url 'create_channel' %}">Create Channel</a></li>
+      	        </ul>
+  	            </li>
+                <li role="presentation" class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Channel
+                  <span class="caret"></span>
+                  </a>
+      	        <ul class="dropdown-menu" role="menu">
+                  <li><a href="{% url 'create_channel' %}">Create</a></li>
+                   <li class="divider"></li>
+                    {% for channel in channels %}
+                    <li>{{ channel.name }}</li>
+                    {% endfor %}
       	        </ul>
   	            </li>
   	            {% else %}
