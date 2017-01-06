@@ -19,6 +19,7 @@
     <div class="form-group col-md-4">
         <input type="hidden" name="post_type" value="send_chat"/>
         <input type="submit" class="btn btn-lg btn-primary" value="send"/>
+        <p>Enter to send message. Ctrl+Enter to create newline.</p>
     </div>
 </form>
 {% endblock %}
@@ -51,6 +52,17 @@ function updateMsg() {
         	$('.list-group-item').append(data);    //解析返回的 xml  
     });  
     setTimeout("updateMsg()", 1000);        //每秒更新一次  
-}  
+}
+
+$(document).ready(function(){
+    $('textarea').keypress(function(e){
+      if(e.which == 13 && !e.shiftKey){
+           $('form').submit();
+       }
+    });
+});
+$("form").on('submit', function(e){
+    e.preventDefault();
+});
 </script>
 {% endblock %}
