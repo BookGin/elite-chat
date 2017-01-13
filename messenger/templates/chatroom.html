@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}chat room{% endblock %}
 {% block content %}
+{%  load staticfiles %}
 <div class="list-group col-md-10 col-md-offset-1 well">
     <div class="list-group-item">
 {% include "chat_list.html" %}
@@ -14,49 +15,53 @@
     <div class="form-group col-md-4">
         <input type="hidden" name="post_type" value="send_chat"/>
         <input type="submit" class="btn btn-lg btn-primary" value="send"/>
-        <p>Enter to send messege. Shift+Enter to create newline.</p>
-<iframe width="100%" height="80" src="/messenger/upload"></iframe> 
+        <p>Enter to send message. Ctrl+Enter to create newline.</p>
     </div>
 </form>
-
 {% endblock %}
 {% block script %}
 <script>
- $(document).ready(function() {  
-    updateMsg();    
+ $(document).ready(function() {
+    updateMsg();    //更细信息
+            //表单 submit 事件
+    $("#chatForm").submit(function() {
+        //ajax 提交表单
+        $.post("./post/",
+            $('#chatForm').serialize(),
+            function(data) {
+            $("#content").val("");  //消息发送成功后清空内容框
+            //addMsg(xml);    //处理 xml
+        });
+        return false;       //阻止表单提交
+    });
+});
 
-    $("#chatForm").submit(function() {  
-  
-        $.post("./post/",  
-        	$('#chatForm').serialize(),
-        	function(data) {  
-            $("#content").val("");  
-
-        });  
-
-        console.log("return false");
-        return false;      
-    });  
-});  
-              
-
-function updateMsg() {  
+//更新消息
+function updateMsg() {
     $.post(
-    	"./post/", 
-    	{
-    		post_type: "get_chat",
-			last_chat_id: $(".chat_id").last().val()
-		}, 
-		function(data) {  
-        	$('.list-group-item').append(data);    
-    });  
-    setTimeout("updateMsg()", 1000);        
+        "./post/",
+        {
+            post_type: "get_chat",
+            last_chat_id: $(".chat_id").last().val()
+        },
+        function(data) {
+            if (data.trim(' ') != ''){
+                console.log(data);
+                var audio = new Audio("http://static1.grsites.com/archive/sounds/household/household052.mp3");
+     audio.play();
+            }
+            $('.list-group-item').append(data);    //解析返回的 xml
+    });
+    setTimeout("updateMsg()", 1000);        //每秒更新一次
 }
 
 $(document).ready(function(){
     $('textarea').keypress(function(e){
       if(e.which == 13 && !e.shiftKey){
-           $('form').submit();
+           $('form').submit(
+           );
+           var audio = new Audio("http://static1.grsites.com/archive/sounds/household/household050.mp3");
+audio.play();
        }
     });
 });
