@@ -16,6 +16,7 @@
   	            <li><a href="{% url 'channel_message' channel_id=channel.id%}">{{ channel.name }}</a></li>
                   {% endfor %}
                   <li><a style="color: red" href="{% url 'create_channel' %}">Create Channel</a></li>
+                  <li><a style="color: red" href="{% url 'remove_channel' %}">Remove Channel</a></li>
     </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#"><b>{{user.username}}</b></a></li>

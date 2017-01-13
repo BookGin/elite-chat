@@ -59,6 +59,7 @@ def channel_post(request, channel_id):
             channel = Channel.objects.get(id=channel_id)
             chats = channel.messages.filter(id__gt=last_chat_id)
             return render(request, 'chat_list.html', {'chats':chats})
+
 # Create your views here.
 class ChannelForm(forms.Form):
     name1 = forms.CharField(label='Name 1', required=False)
@@ -81,15 +82,34 @@ def create_channel(request):
                     new_channel.add_user(user)
                     channel_users.append(user.username)
 
-            init_content = "Add " + ', '.join(channel_users) + ' to new channel' 
+            init_content = "Add User" + ', '.join(channel_users) + ' to new channel' 
             new_message = Message.objects.create(
               sender=request.user, content = init_content, channel=new_channel)
             new_channel.save()
 
-            return redirect(reverse('index'))
+        return redirect(reverse('index'))
     else:
         form = ChannelForm()
         return render(request, 'create_channel.html', {'form': form})
+
+class RemoveForm(forms.Form):
+    channel_name = forms.CharField(label='Channel Name')
+
+def remove_channel(request):
+    if request.method == 'POST':
+        form = RemoveForm(request.POST)
+        if form.is_valid():
+            channel_name = form.cleaned_data['channel_name']
+            if Channel.objects.filter(name = channel_name).exists():
+                channel = Channel.objects.get(name = channel_name)
+                channel.messages.all().delete()
+                channel.delete()
+
+        return redirect(reverse('index'))
+
+    else:
+        form = RemoveForm()
+        return render(request, 'remove_channel.html', {'form': form})
 
 def channel_message(request, channel_id):
     channel = Channel.objects.get(id=channel_id)
