@@ -102,13 +102,12 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             rand_str = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))
-            print(repr(request.FILES['file']))
             filename = rand_str + os.path.splitext(request.FILES['file'].name)[1]
             path = settings.BASE_DIR + '/uploadfiles/' + filename
             with open(path, 'wb+') as destination:
                 for chunk in request.FILES['file'].chunks():
                     destination.write(chunk)
-            return HttpResponse(filename)
+            return render(request, 'upload_success.html', {'url': filename})
         return HttpResponse("UPLOAD FAIL")
     else:
         form = UploadFileForm()
