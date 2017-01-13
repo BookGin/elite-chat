@@ -17,8 +17,15 @@ import json
 import datetime
 
 def index(request):
-    chats = list(Message.objects.all())[-100:]
-    channels = list(Channel.objects.all())
+    user_channel, created = Channel.objects.get_or_create(name=request.user.username)
+    if created:
+        user_channel.save()
+        user_channel.add_user(request.user)
+        init_msg = Message.objects.create(
+              sender=request.user, content = "Welcome! try to type something", channel=user_channel)
+        init_msg.save()
+    chats = list(user_channel.messages.all())[-100:]
+    channels = list(request.user.belonged_channel.all())
     return render(request, 'chatroom.html', {'chats': chats, 'channels': channels})
 
 @csrf_exempt
@@ -27,12 +34,14 @@ def post(request):
         post_type = request.POST.get('post_type')
         if post_type == 'send_chat': 
             new_message = Message.objects.create(
-                sender=request.user, content = request.POST.get('content'))
+                sender=request.user, content = request.POST.get('content'),
+                channel=Channel.objects.get_or_create(name=request.user.username))
             new_message.save()
             return HttpResponse()
         elif post_type == 'get_chat':
             last_chat_id = int(request.POST.get('last_chat_id'))
-            chats = Message.objects.filter(id__gt=last_chat_id)
+            channel = Channel.objects.get(name=request.user.username)
+            chats = channel.messages.filter(id__gt=last_chat_id)
             return render(request, 'chat_list.html', {'chats':chats})
 
 @csrf_exempt
@@ -81,7 +90,7 @@ def create_channel(request):
 def channel_message(request, channel_id):
     channel = Channel.objects.get(id=channel_id)
     chats = channel.messages.all()
-    all_channels = list(Channel.objects.all())
+    all_channels = list(request.user.belonged_channel.all())
     return render(request, 'chatroom.html', {'channel_id': channel_id, 'channels': all_channels, 'chats': chats})
 
 class UploadFileForm(forms.Form):
