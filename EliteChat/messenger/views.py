@@ -61,9 +61,9 @@ def channel_post(request, channel_id):
             return render(request, 'chat_list.html', {'chats':chats})
 # Create your views here.
 class ChannelForm(forms.Form):
-    name1 = forms.CharField(label='Name 1')
-    name2 = forms.CharField(label='Name 2')
-    name3 = forms.CharField(label='Name 3')
+    name1 = forms.CharField(label='Name 1', required=False)
+    name2 = forms.CharField(label='Name 2', required=False)
+    name3 = forms.CharField(label='Name 3', required=False)
     channel_name = forms.CharField(label='Channel Name')
 
 def create_channel(request):
@@ -72,15 +72,18 @@ def create_channel(request):
         if form.is_valid():
             new_channel = Channel.objects.create(name = form.cleaned_data['channel_name'])
             new_channel.save()
-            user1 = User.objects.get(username = form.cleaned_data['name1'])
-            user2 = User.objects.get(username = form.cleaned_data['name2'])
-            user3 = User.objects.get(username = form.cleaned_data['name3'])
-            new_channel.add_user(user1)
-            new_channel.add_user(user2)
-            new_channel.add_user(user3)
+            new_channel.add_user(request.user)
+            fields = ['name1','name2','name3']
+            channel_users = []
+            for field in fields:
+                if User.objects.filter(username = form.cleaned_data[field]).exists():
+                    user = User.objects.get(username = form.cleaned_data[field])
+                    new_channel.add_user(user)
+                    channel_users.append(user.username)
 
+            init_content = "Add " + ', '.join(channel_users) + ' to new channel' 
             new_message = Message.objects.create(
-              sender=request.user, content = "Welcome to new channel!", channel=new_channel)
+              sender=request.user, content = init_content, channel=new_channel)
             new_channel.save()
 
             return redirect(reverse('index'))
