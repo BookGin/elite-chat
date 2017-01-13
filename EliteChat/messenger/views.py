@@ -7,6 +7,12 @@ from .models import Message, Channel
 from django.contrib.auth.models import User
 from django import forms
 from django.views.decorators.csrf import csrf_protect,csrf_exempt
+from django.conf import settings
+from django.utils.encoding import smart_str
+from pathlib import Path
+import os
+import string
+import random
 import json
 import datetime
 
@@ -77,3 +83,34 @@ def channel_message(request, channel_id):
     chats = channel.messages.all()
     all_channels = list(Channel.objects.all())
     return render(request, 'chatroom.html', {'channel_id': channel_id, 'channels': all_channels, 'chats': chats})
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            rand_str = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))
+            print(repr(request.FILES['file']))
+            filename = rand_str + os.path.splitext(request.FILES['file'].name)[1]
+            path = settings.BASE_DIR + '/uploadfiles/' + filename
+            with open(path, 'wb+') as destination:
+                for chunk in request.FILES['file'].chunks():
+                    destination.write(chunk)
+            return HttpResponse(filename)
+        return HttpResponse("UPLOAD FAIL")
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload.html', {'form': form})
+
+def get_file(request, file_id):
+    filepath = settings.BASE_DIR + '/uploadfiles/' + file_id
+    if Path(filepath).is_file():
+        response = HttpResponse(content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_id)
+        response['X-Sendfile'] = smart_str(filepath)
+        with open(filepath, 'rb') as f:
+            response.write(f.read())
+            return response
+    return HttpResponse("No such file!")
