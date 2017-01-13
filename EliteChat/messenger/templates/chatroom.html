@@ -14,9 +14,11 @@
     <div class="form-group col-md-4">
         <input type="hidden" name="post_type" value="send_chat"/>
         <input type="submit" class="btn btn-lg btn-primary" value="send"/>
-        <p>Enter to send message. Shift+Enter to create newline.</p>
+        <p>Enter to send messege. Shift+Enter to create newline.</p>
+<iframe width="100%" height="80" src="/messenger/upload"></iframe> 
     </div>
 </form>
+
 {% endblock %}
 {% block script %}
 <script>
@@ -31,7 +33,9 @@
             $("#content").val("");  
 
         });  
-        return false;       
+
+        console.log("return false");
+        return false;      
     });  
 });  
               
