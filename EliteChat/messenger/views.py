@@ -32,10 +32,11 @@ def index(request):
 def post(request):
     if request.method == 'POST':
         post_type = request.POST.get('post_type')
-        if post_type == 'send_chat': 
+        if post_type == 'send_chat':
+            channel_obj, created = Channel.objects.get_or_create(name=request.user.username)
             new_message = Message.objects.create(
                 sender=request.user, content = request.POST.get('content'),
-                channel=Channel.objects.get_or_create(name=request.user.username))
+                channel=channel_obj)
             new_message.save()
             return HttpResponse()
         elif post_type == 'get_chat':
@@ -48,7 +49,7 @@ def post(request):
 def channel_post(request, channel_id):
     if request.method == 'POST':
         post_type = request.POST.get('post_type')
-        if post_type == 'send_chat': 
+        if post_type == 'send_chat':
             new_message = Message.objects.create(
             sender=request.user, content = request.POST.get('content'), channel=Channel.objects.get(id=channel_id))
             new_message.save()
