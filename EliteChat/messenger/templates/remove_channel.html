@@ -1,0 +1,14 @@
+<html>
+
+<body>
+{% block title %}Remove Channel. This action can't be restored and all messages will be lost{% endblock %}
+{% block content %}
+
+<form action="" method="post"> {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="remove">
+</form>
+
+{% endblock %}
+</body>
+</html>
